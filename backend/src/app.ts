@@ -4,6 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { errorHandler } from "./common/errors/errorHandler";
 import { AppError } from "./common/errors/AppErros";
+import { notFound } from "./common/middleware/notFound";
 
 const app = express();
 
@@ -28,6 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 //routes
+
+//not found route handler
+app.use(notFound);
 
 //global error handler
 app.use(errorHandler);
