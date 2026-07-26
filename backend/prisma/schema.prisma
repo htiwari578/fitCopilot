@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum FitnessGoal {
+  FAT_LOSS
+  MUSCLE_GAIN
+  MAINTENANCE
+  STRENGTH
+  ENDURANCE
+}
+
+enum ActivityLevel {
+  SEDENTARY
+  LIGHT
+  MODERATE
+  ACTIVE
+  VERY_ACTIVE
+}
+
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum DietType {
+  VEG
+  NON_VEG
+  VEGAN
+}
+
+
+model User {
+
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String
+  isEmailVerified Boolean  @default(false)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Profile {
+  id                String            @id @default(cuid())
+
+  firstName         String
+  lastName          String?
+
+  gender            Gender
+  dateOfBirth       DateTime?
+
+  heightCm          Float
+  weightKg          Float
+
+  goal              FitnessGoal
+  activityLevel     ActivityLevel
+  experienceLevel   ExperienceLevel
+
+  workoutDays       Int
+  workoutDuration   Int
+
+  dietType          DietType
+
+  budget            Int?
+
+  injuries          String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("profiles")
+}
+
