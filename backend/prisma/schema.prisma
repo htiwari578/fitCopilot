@@ -47,6 +47,12 @@ enum DietType {
   VEGAN
 }
 
+enum WorkoutStatus {
+  GENERATED
+  COMPLETED
+  SKIPPED
+}
+
 
 model User {
 
@@ -90,5 +96,23 @@ model Profile {
   updatedAt         DateTime @updatedAt
 
   @@map("profiles")
+}
+
+model WorkoutPlan {
+  id                 String          @id @default(cuid())
+
+  title              String
+  goal               FitnessGoal
+
+  estimatedDuration  Int
+
+  aiSummary          String?
+
+  status             WorkoutStatus   @default(GENERATED)
+
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@map("workout_plans")
 }
 
