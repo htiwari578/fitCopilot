@@ -10,7 +10,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-
 }
 
 enum Gender {
@@ -53,66 +52,111 @@ enum WorkoutStatus {
   SKIPPED
 }
 
-
 model User {
-
-  id              String   @id @default(cuid())
-  email           String   @unique
+  id              String  @id @default(cuid())
+  email           String  @unique
   password        String
-  isEmailVerified Boolean  @default(false)
+  isEmailVerified Boolean @default(false)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dailyCheckIns DailyCheckIn[]
 
   @@map("users")
 }
 
 model Profile {
-  id                String            @id @default(cuid())
+  id String @id @default(cuid())
 
-  firstName         String
-  lastName          String?
+  firstName String
+  lastName  String?
 
-  gender            Gender
-  dateOfBirth       DateTime?
+  gender      Gender
+  dateOfBirth DateTime?
 
-  heightCm          Float
-  weightKg          Float
+  heightCm Float
+  weightKg Float
 
-  goal              FitnessGoal
-  activityLevel     ActivityLevel
-  experienceLevel   ExperienceLevel
+  goal            FitnessGoal
+  activityLevel   ActivityLevel
+  experienceLevel ExperienceLevel
 
-  workoutDays       Int
-  workoutDuration   Int
+  workoutDays     Int
+  workoutDuration Int
 
-  dietType          DietType
+  dietType DietType
 
-  budget            Int?
+  budget Int?
 
-  injuries          String?
+  injuries String?
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("profiles")
 }
 
 model WorkoutPlan {
-  id                 String          @id @default(cuid())
+  id String @id @default(cuid())
 
-  title              String
-  goal               FitnessGoal
+  title String
+  goal  FitnessGoal
 
-  estimatedDuration  Int
+  estimatedDuration Int
 
-  aiSummary          String?
+  aiSummary String?
 
-  status             WorkoutStatus   @default(GENERATED)
+  status WorkoutStatus @default(GENERATED)
 
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  exercises WorkoutExercise[]
 
   @@map("workout_plans")
 }
 
+model WorkoutExercise {
+  id            String @id @default(cuid())
+  workoutPlanId String
+
+  exerciseName String
+  sets         Int
+  repsMin      Int
+  repsMax      Int
+  restSeconds  Int
+  order        Int
+  notes        String?
+
+  createdAt DateTime @default(now())
+
+  workoutPlan WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+
+  @@index([workoutPlanId])
+  @@map("workout_exercises")
+}
+
+model DailyCheckIn {
+  id String @id @default(cuid())
+
+  userId String
+
+  sleepHours    Float
+  energyLevel   Int
+  stressLevel   Int
+  sorenessLevel Int
+
+  availableMinutes Int
+
+  waterIntakeMl Int?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("daily_check_ins")
+}
